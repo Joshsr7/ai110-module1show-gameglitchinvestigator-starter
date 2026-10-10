@@ -1,54 +1,57 @@
-# 🎮 Game Glitch Investigator: The Impossible Guesser
+# Game Glitch Investigator
 
-## 🚨 The Situation
+A small number guessing game built with Streamlit. The AI generated starter
+had several glitches. This repo contains the repaired game, with the core
+logic refactored into logic_utils.py and automated tests in tests.
 
-You asked an AI to build a simple "Number Guessing Game" using Streamlit.
-It wrote the code, ran away, and now the game is unplayable. 
+## How to run
 
-- You can't win.
-- The hints lie to you.
-- The secret number seems to have commitment issues.
+1. pip install -r requirements.txt
+2. python -m streamlit run app.py
 
-## 🛠️ Setup
+## How to test
 
-1. Install dependencies: `pip install -r requirements.txt`
-2. Run the broken app: `python -m streamlit run app.py`
-
-## 🕵️‍♂️ Your Mission
-
-1. **Play the game.** Open the "Developer Debug Info" tab in the app to see the secret number. Try to win.
-2. **Find the State Bug.** Why does the secret number change every time you click "Submit"? Ask ChatGPT: *"How do I keep a variable from resetting in Streamlit when I click a button?"*
-3. **Fix the Logic.** The hints ("Higher/Lower") are wrong. Fix them.
-4. **Refactor & Test.** - Move the logic into `logic_utils.py`.
-   - Run `pytest` in your terminal.
-   - Keep fixing until all tests pass!
-
-## 📝 Document Your Experience
-
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
-
-## 📸 Demo Walkthrough
-
-Describe your fixed game in numbered steps so a reader can follow along without watching a video:
-
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
-
-**Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
-
-## 🧪 Test Results
+Run pytest from the project root:
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+python -m pytest
 ```
 
-## 🚀 Stretch Features
+## Demo Walkthrough
 
-- [ ] [If you choose to complete Challenge 4, describe the Enhanced UI changes here — a screenshot is optional]
+1. User enters a guess of 40
+2. Game returns Too Low
+3. User enters a guess of 70, game returns Too High
+4. Score drops by ten for each wrong guess and stays put on a correct guess
+5. User enters the secret number, game returns Correct and shows the number
+6. Game ends after the correct guess, or after seven attempts if the number is not found
+
+## What was fixed
+
+1. The hint was reversed, so a high guess said Too Low. Moved into check_guess and corrected.
+2. The score dropped on a correct guess. Now a wrong guess costs points, a correct guess keeps the score, and the score never goes below zero.
+3. Empty or text input crashed the app. parse_guess now raises a clear error and the app shows a friendly message.
+4. The game never ended. is_over now ends the game on a correct guess or when attempts reach the limit.
+
+## Document Your Experience
+
+The core logic was moved out of app.py into logic_utils.py as four small
+functions: parse_guess, check_guess, apply_score, and is_over. Keeping the
+logic pure made it easy to test without the interface. The reflection file
+records the bug reproduction log, how AI was used as a teammate including one
+suggestion that was rejected, and how each fix was verified.
+
+## Test output
+
+```
+...............                                                          [100%]
+15 passed
+```
+
+## Files
+
+- app.py: the Streamlit interface
+- logic_utils.py: the game logic
+- tests/test_game_logic.py: automated tests
+- reflection.md: bug log and reflection
+- requirements.txt: dependencies
